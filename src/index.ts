@@ -7,8 +7,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ChronaryToolkit } from '@chronary/toolkit/mcp';
 import { parseArgs, HELP_TEXT } from './args.js';
-
-const VERSION = '0.1.0';
+import { VERSION } from './version.js';
 
 const parsed = parseArgs(process.argv.slice(2));
 if (!parsed.ok) {
@@ -38,6 +37,9 @@ const toolkit = new ChronaryToolkit({
   apiKey,
   baseUrl: parsed.value.baseUrl,
   tools: parsed.value.tools,
+  // Identify MCP traffic to the API for analytics. UA stays as `chronary-ts/...`
+  // from the underlying SDK; this header surfaces the wrapper identity.
+  extraHeaders: { 'X-Chronary-Client': `chronary-mcp/${VERSION}` },
 });
 
 const server = new McpServer({ name: 'chronary-mcp', version: VERSION });

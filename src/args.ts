@@ -80,7 +80,7 @@ Usage:
   chronary-mcp [options]
 
 Environment:
-  CHRONARY_API_KEY   Required. Your Chronary API key (chr_sk_live_... or chr_sk_test_...).
+  CHRONARY_API_KEY   Required. Your Chronary API key (chr_sk_...).
 
 Options:
   --tools <names>    Comma-separated list of tool names to expose (default: all 23 tools).

@@ -7,7 +7,7 @@ Drops 23 calendar tools (list/create/update/delete events, check availability, m
 ## Prerequisites
 
 1. A Chronary account — sign up at [chronary.ai](https://chronary.ai).
-2. An API key from the console (starts with `chr_sk_live_` or `chr_sk_test_`).
+2. An API key from the console (starts with `chr_sk_`).
 3. Node.js ≥ 18 on the machine where the MCP client runs.
 
 ## Client configurations
@@ -27,7 +27,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
       "command": "npx",
       "args": ["-y", "chronary-mcp"],
       "env": {
-        "CHRONARY_API_KEY": "chr_sk_live_..."
+        "CHRONARY_API_KEY": "chr_sk_..."
       }
     }
   }
@@ -43,7 +43,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
       "command": "cmd",
       "args": ["/c", "npx", "-y", "chronary-mcp"],
       "env": {
-        "CHRONARY_API_KEY": "chr_sk_live_..."
+        "CHRONARY_API_KEY": "chr_sk_..."
       }
     }
   }
@@ -64,7 +64,7 @@ Edit `.cursor/mcp.json` (project-level) or `~/.cursor/mcp.json` (user-level):
     "chronary": {
       "command": "npx",
       "args": ["-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -78,7 +78,7 @@ Edit `.cursor/mcp.json` (project-level) or `~/.cursor/mcp.json` (user-level):
     "chronary": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -97,7 +97,7 @@ Edit `.vscode/mcp.json` (workspace) or run the **MCP: Open User Configuration** 
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -112,7 +112,7 @@ Edit `.vscode/mcp.json` (workspace) or run the **MCP: Open User Configuration** 
       "type": "stdio",
       "command": "cmd",
       "args": ["/c", "npx", "-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -130,7 +130,7 @@ Edit `.mcp.json` at the project root, or `~/.claude.json` for user-level:
     "chronary": {
       "command": "npx",
       "args": ["-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -144,7 +144,7 @@ Edit `.mcp.json` at the project root, or `~/.claude.json` for user-level:
     "chronary": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -162,7 +162,7 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
     "chronary": {
       "command": "npx",
       "args": ["-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -176,7 +176,7 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
     "chronary": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "chronary-mcp"],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }
@@ -197,7 +197,7 @@ Exposing all 23 tools uses ~3–5k LLM tokens per request. For focused workflows
         "-y", "chronary-mcp",
         "--tools", "list_events,check_availability,create_event"
       ],
-      "env": { "CHRONARY_API_KEY": "chr_sk_live_..." }
+      "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
 }

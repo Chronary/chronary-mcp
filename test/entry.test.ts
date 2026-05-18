@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import packageJson from '../package.json';
+import { VERSION } from '../src/version';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 const entryPath = resolve(testDir, '../src/index.ts');
@@ -9,7 +11,7 @@ const entrySource = readFileSync(entryPath, 'utf8');
 
 describe('src/index.ts', () => {
   it('starts with a Node shebang so it can be launched via npx', () => {
-    const firstLine = entrySource.split('\n')[0];
+    const firstLine = entrySource.split('\n')[0].trimEnd();
     expect(firstLine).toBe('#!/usr/bin/env node');
   });
 
@@ -38,5 +40,10 @@ describe('src/index.ts', () => {
 
   it('uses StdioServerTransport', () => {
     expect(entrySource).toContain('StdioServerTransport');
+  });
+
+  it('uses the package version for --version and MCP server metadata', () => {
+    expect(VERSION).toBe(packageJson.version);
+    expect(entrySource).toContain("import { VERSION } from './version.js'");
   });
 });
