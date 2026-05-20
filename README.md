@@ -1,4 +1,4 @@
-# chronary-mcp
+# @chronary/mcp
 
 MCP server for [Chronary](https://chronary.ai) — calendar tools for AI assistants.
 
@@ -12,7 +12,7 @@ Drops 23 calendar tools (list/create/update/delete events, check availability, m
 
 ## Client configurations
 
-All examples use `npx -y chronary-mcp`, which downloads and runs the latest version on demand. No install step required.
+All examples use `npx -y @chronary/mcp`, which downloads and runs the latest version on demand. No install step required.
 
 ### Claude Desktop
 
@@ -25,7 +25,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "chronary": {
       "command": "npx",
-      "args": ["-y", "chronary-mcp"],
+      "args": ["-y", "@chronary/mcp"],
       "env": {
         "CHRONARY_API_KEY": "chr_sk_..."
       }
@@ -41,7 +41,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "chronary": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "chronary-mcp"],
+      "args": ["/c", "npx", "-y", "@chronary/mcp"],
       "env": {
         "CHRONARY_API_KEY": "chr_sk_..."
       }
@@ -63,7 +63,7 @@ Edit `.cursor/mcp.json` (project-level) or `~/.cursor/mcp.json` (user-level):
   "mcpServers": {
     "chronary": {
       "command": "npx",
-      "args": ["-y", "chronary-mcp"],
+      "args": ["-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -77,7 +77,7 @@ Edit `.cursor/mcp.json` (project-level) or `~/.cursor/mcp.json` (user-level):
   "mcpServers": {
     "chronary": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "chronary-mcp"],
+      "args": ["/c", "npx", "-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -96,7 +96,7 @@ Edit `.vscode/mcp.json` (workspace) or run the **MCP: Open User Configuration** 
     "chronary": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "chronary-mcp"],
+      "args": ["-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -111,7 +111,7 @@ Edit `.vscode/mcp.json` (workspace) or run the **MCP: Open User Configuration** 
     "chronary": {
       "type": "stdio",
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "chronary-mcp"],
+      "args": ["/c", "npx", "-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -129,7 +129,7 @@ Edit `.mcp.json` at the project root, or `~/.claude.json` for user-level:
   "mcpServers": {
     "chronary": {
       "command": "npx",
-      "args": ["-y", "chronary-mcp"],
+      "args": ["-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -143,7 +143,7 @@ Edit `.mcp.json` at the project root, or `~/.claude.json` for user-level:
   "mcpServers": {
     "chronary": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "chronary-mcp"],
+      "args": ["/c", "npx", "-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -161,7 +161,7 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
   "mcpServers": {
     "chronary": {
       "command": "npx",
-      "args": ["-y", "chronary-mcp"],
+      "args": ["-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -175,7 +175,7 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
   "mcpServers": {
     "chronary": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "chronary-mcp"],
+      "args": ["/c", "npx", "-y", "@chronary/mcp"],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
   }
@@ -194,7 +194,7 @@ Exposing all 23 tools uses ~3–5k LLM tokens per request. For focused workflows
     "chronary": {
       "command": "npx",
       "args": [
-        "-y", "chronary-mcp",
+        "-y", "@chronary/mcp",
         "--tools", "list_events,check_availability,create_event"
       ],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
@@ -209,7 +209,7 @@ For self-hosted Chronary instances or development against a local API:
 
 ```json
 {
-  "args": ["-y", "chronary-mcp", "--base-url", "http://localhost:8787"]
+  "args": ["-y", "@chronary/mcp", "--base-url", "http://localhost:8787"]
 }
 ```
 
@@ -245,7 +245,7 @@ Tool annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`) are surfa
 **Verify the binary runs locally:**
 
 ```sh
-CHRONARY_API_KEY=test npx -y chronary-mcp --help
+CHRONARY_API_KEY=test npx -y @chronary/mcp --help
 ```
 
 ## Links

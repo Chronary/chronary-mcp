@@ -1,20 +1,39 @@
 name: Release Artifact
 
-# Publishes chronary-mcp (MCP server for AI assistants) to npm and creates a GitHub Release.
+# Publishes @chronary/mcp (MCP server for AI assistants) to npm and creates a GitHub Release.
+# The CLI binary remains `chronary-mcp` (so `chronary-mcp --help` still works after install);
+# only the npm install path is @chronary/mcp.
 #
-# Provenance posture (same pattern as @chronary/sdk):
-#   - While the chronary-mcp repo is PRIVATE, npm automatic provenance
-#     can't run (requires public source repo), so --provenance is off.
-#   - GitHub artifact attestations require a public repo on the free plan,
-#     so the attest step is gated on repository.visibility.
+# Provenance posture:
+#   - Publishes via npm OIDC Trusted Publishing — no NPM_TOKEN required.
+#     The `id-token: write` permission and `registry-url` on setup-node
+#     are sufficient once chronary-mcp is registered as a Trusted
+#     Publisher for @chronary/mcp on npmjs.com.
+#   - npm CLI >= 11.5.1 is required for OIDC trusted publishing; we
+#     pin npm to latest before publishing because Node 22 ships with
+#     npm 10.x by default.
+#   - `npm publish --provenance` records a Sigstore attestation that
+#     links the published tarball back to this workflow run.
+#   - GitHub artifact attestations also fire on public repos via
+#     actions/attest-build-provenance.
 #
-# Workspace dependency caveat:
+# Workspace dep posture:
 #   - package.json declares @chronary/sdk and @chronary/toolkit via
-#     "workspace:*". Those only resolve inside the monorepo. While
-#     publish_registry=false we skip install/build/publish entirely; the
-#     mirror just ships source + creates a GitHub Release. When
-#     publish_registry flips on, workspace:* must be rewritten to concrete
-#     versions BEFORE install — wired in the public-flip PR (#222).
+#     "workspace:*". Those only resolve inside the monorepo. The
+#     pre-install step below rewrites both to exact published npm
+#     versions (`^${version}`) before `pnpm install` runs so the
+#     mirror can install from the registry.
+#
+# Prerequisites (one-time, on flip to public-registry):
+#   1. chronary-mcp is public on GitHub.
+#   2. @chronary/sdk and @chronary/toolkit are published on npm (this
+#      workflow looks them up via `npm view`).
+#   3. First publish must use a classic token from local (npm has no
+#      "Pending Publisher" flow — see npm/cli#8544). After that, register
+#      Trusted Publisher on npmjs.com → @chronary/mcp → Access tab →
+#      repo `Chronary/chronary-mcp`, workflow `release-artifact.yml`,
+#      environment blank.
+#   4. NPM_TOKEN repo secret (if any) has been deleted.
 
 on:
   push:
@@ -31,7 +50,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,28 +62,75 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Upgrade npm for OIDC trusted publishing
+        run: |
+          # npm install -g npm@latest fails when the runner's bundled npm is incomplete
+          # (e.g. missing promise-retry on Node 22.22+). Bypass by downloading the
+          # tarball directly into the existing module directory.
+          NPM_DIR="$(node -e "process.stdout.write(require('path').resolve(process.execPath,'../../lib/node_modules/npm'))")"
+          curl -fsSL https://registry.npmjs.org/npm/-/npm-11.5.1.tgz -o /tmp/npm.tgz
+          tar -xzf /tmp/npm.tgz --strip-components=1 -C "$NPM_DIR"
+          npm --version
+
       - name: Validate release manifest
         id: manifest
         run: |
           node -e "const fs=require('fs'); const manifest=JSON.parse(fs.readFileSync('.chronary-release.json','utf8')); if (manifest.artifact !== 'mcp') throw new Error('Expected artifact mcp'); if (manifest.public_tag !== process.env.GITHUB_REF_NAME) throw new Error('Tag mismatch between manifest and workflow ref'); require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'publish_registry=' + String(Boolean(manifest.publish_registry)) + '\n');"
           test -f RELEASE_NOTES.txt
 
+      # Workspace rewrite and the steps that depend on it (install/build/publish)
+      # are gated on publish_registry=true. When false, @chronary/toolkit may not
+      # yet be on npm (it ships before mcp does), so npm view would fail.
+      # Source-only releases skip the rewrite and ship the working tree as-is.
+      - name: Rewrite workspace:* deps to published npm versions
+        if: steps.manifest.outputs.publish_registry == 'true'
+        run: |
+          set -euo pipefail
+          SDK_VERSION="$(npm view @chronary/sdk version)"
+          TOOLKIT_VERSION="$(npm view @chronary/toolkit version)"
+          if [ -z "${SDK_VERSION}" ]; then
+            echo "::error::npm view @chronary/sdk version returned empty — cannot rewrite workspace:* dep" >&2
+            exit 1
+          fi
+          if [ -z "${TOOLKIT_VERSION}" ]; then
+            echo "::error::npm view @chronary/toolkit version returned empty — cannot rewrite workspace:* dep" >&2
+            exit 1
+          fi
+          echo "Rewriting @chronary/sdk workspace:* -> ^${SDK_VERSION}"
+          echo "Rewriting @chronary/toolkit workspace:* -> ^${TOOLKIT_VERSION}"
+          SDK_VERSION="${SDK_VERSION}" TOOLKIT_VERSION="${TOOLKIT_VERSION}" node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const sdkV = process.env.SDK_VERSION;
+            const tkV = process.env.TOOLKIT_VERSION;
+            if (p.dependencies && p.dependencies['@chronary/sdk'] === 'workspace:*') {
+              p.dependencies['@chronary/sdk'] = '^' + sdkV;
+            } else {
+              throw new Error('Expected dependencies[\"@chronary/sdk\"] === \"workspace:*\"; got ' + JSON.stringify(p.dependencies && p.dependencies['@chronary/sdk']));
+            }
+            if (p.dependencies && p.dependencies['@chronary/toolkit'] === 'workspace:*') {
+              p.dependencies['@chronary/toolkit'] = '^' + tkV;
+            } else {
+              throw new Error('Expected dependencies[\"@chronary/toolkit\"] === \"workspace:*\"; got ' + JSON.stringify(p.dependencies && p.dependencies['@chronary/toolkit']));
+            }
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          if grep -q '"workspace:\*"' package.json; then
+            echo "::error::package.json still contains workspace:* after rewrite" >&2
+            cat package.json
+            exit 1
+          fi
+          grep '"@chronary/sdk"\|"@chronary/toolkit"' package.json
+
+      - name: Install dependencies
+        if: steps.manifest.outputs.publish_registry == 'true'
+        run: pnpm install --no-frozen-lockfile
+
       - name: Validate package contents
         run: |
           test -f README.md
           test -f LICENSE
           test -f CHANGELOG.md
-          test -f package.json
-
-      - name: Skip build in private phase
-        if: steps.manifest.outputs.publish_registry != 'true'
-        run: |
-          echo "publish_registry=false — shipping source-only release."
-          echo "pnpm install/build/test/publish skipped while @chronary/sdk + @chronary/toolkit workspace:* deps are not yet resolvable from npm."
-
-      - name: Install dependencies
-        if: steps.manifest.outputs.publish_registry == 'true'
-        run: pnpm install --no-frozen-lockfile
 
       - name: Typecheck
         if: steps.manifest.outputs.publish_registry == 'true'
@@ -91,10 +156,16 @@ jobs:
 
       - name: Publish to npm
         if: steps.manifest.outputs.publish_registry == 'true'
-        run: npm publish *.tgz
+        run: npm publish *.tgz --provenance --access public
 
       - name: Create GitHub Release
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --title "chronary-mcp ${GITHUB_REF_NAME}" \
-            --notes-file RELEASE_NOTES.txt
+          if [ "${{ steps.manifest.outputs.publish_registry }}" = "true" ]; then
+            gh release create "${GITHUB_REF_NAME}" *.tgz \
+              --title "@chronary/mcp ${GITHUB_REF_NAME}" \
+              --notes-file RELEASE_NOTES.txt
+          else
+            gh release create "${GITHUB_REF_NAME}" \
+              --title "@chronary/mcp ${GITHUB_REF_NAME}" \
+              --notes-file RELEASE_NOTES.txt
+          fi
