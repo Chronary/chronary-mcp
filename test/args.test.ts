@@ -33,10 +33,10 @@ describe('parseArgs', () => {
   });
 
   it('parses --tools with multiple valid tools', () => {
-    const result = parseArgs(['--tools', 'list_events,check_availability,create_event']);
+    const result = parseArgs(['--tools', 'list_events,find_meeting_time,create_event']);
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.tools).toEqual(['list_events', 'check_availability', 'create_event']);
+      expect(result.value.tools).toEqual(['list_events', 'find_meeting_time', 'create_event']);
     }
   });
 

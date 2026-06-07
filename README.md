@@ -2,7 +2,7 @@
 
 MCP server for [Chronary](https://chronary.ai) — calendar tools for AI assistants.
 
-Drops 23 calendar tools (list/create/update/delete events, check availability, manage webhooks, iCal subscriptions, usage) into any MCP-compatible client: Claude Desktop, Cursor, VS Code Copilot, Claude Code, Windsurf.
+Drops 47 calendar tools (manage agents, calendars, and events, find meeting times, run scheduling proposals, configure availability rules, manage webhooks, iCal subscriptions, scoped keys, audit log, and usage) into any MCP-compatible client: Claude Desktop, Cursor, VS Code Copilot, Claude Code, Windsurf.
 
 ## Prerequisites
 
@@ -182,11 +182,11 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
 }
 ```
 
-> **Windsurf limit:** Cascade enforces a hard cap of 100 total tools across all MCP servers and 20 tool calls per prompt. Chronary exposes 23; consider `--tools` filtering if you stack multiple servers.
+> **Windsurf limit:** Cascade enforces a hard cap of 100 total tools across all MCP servers and 20 tool calls per prompt. Chronary exposes 47; consider `--tools` filtering if you stack multiple servers.
 
 ## Reducing context with `--tools`
 
-Exposing all 23 tools uses ~3–5k LLM tokens per request. For focused workflows, whitelist only what you need:
+Exposing all 47 tools uses LLM tokens on every request. For focused workflows, whitelist only what you need:
 
 ```json
 {
@@ -195,7 +195,7 @@ Exposing all 23 tools uses ~3–5k LLM tokens per request. For focused workflows
       "command": "npx",
       "args": [
         "-y", "@chronary/mcp",
-        "--tools", "list_events,check_availability,create_event"
+        "--tools", "list_events,find_meeting_time,create_event"
       ],
       "env": { "CHRONARY_API_KEY": "chr_sk_..." }
     }
@@ -221,15 +221,30 @@ For self-hosted Chronary instances or development against a local API:
 | `create_calendar`, `update_calendar` | | |
 | `delete_calendar` | | ✓ |
 | `list_events`, `get_event` | ✓ | |
-| `create_event`, `update_event` | | |
-| `delete_event` | | ✓ |
-| `check_availability` | ✓ | |
-| `list_webhooks`, `get_webhook` | ✓ | |
+| `create_event`, `update_event`, `confirm_event` | | |
+| `cancel_event`, `release_event` | | ✓ |
+| `list_agents`, `get_agent` | ✓ | |
+| `create_agent`, `update_agent` | | |
+| `delete_agent` | | ✓ |
+| `get_availability`, `find_meeting_time` | ✓ | |
+| `get_calendar_context` | ✓ | |
+| `list_proposals`, `get_proposal` | ✓ | |
+| `create_proposal`, `respond_to_proposal`, `resolve_proposal` | | |
+| `cancel_proposal` | | ✓ |
+| `get_availability_rules` | ✓ | |
+| `set_availability_rules` | | |
+| `clear_availability_rules` | | ✓ |
+| `list_webhooks`, `get_webhook`, `list_webhook_deliveries` | ✓ | |
 | `create_webhook`, `update_webhook` | | |
 | `delete_webhook` | | ✓ |
 | `list_ical_subscriptions`, `get_ical_subscription` | ✓ | |
-| `create_ical_subscription`, `update_ical_subscription`, `sync_ical_subscription` | | |
+| `subscribe_ical`, `update_ical_subscription`, `sync_ical_subscription` | | |
 | `delete_ical_subscription` | | ✓ |
+| `list_scoped_keys` | ✓ | |
+| `create_scoped_key` | | |
+| `revoke_scoped_key` | | ✓ |
+| `get_audit_log` | ✓ | |
+| `accept_terms` | | |
 | `get_usage` | ✓ | |
 
 Tool annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`) are surfaced to MCP clients so hosts can decide whether to require user confirmation.

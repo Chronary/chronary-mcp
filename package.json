@@ -1,6 +1,6 @@
 {
   "name": "@chronary/mcp",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "MCP server for Chronary — calendar tools for AI assistants (Claude Desktop, Cursor, VS Code, Windsurf)",
   "license": "Apache-2.0",
   "type": "module",
@@ -32,7 +32,7 @@
     "type": "git",
     "url": "https://github.com/Chronary/chronary-mcp"
   },
-  "homepage": "https://docs.chronary.ai",
+  "homepage": "https://chronary.ai",
   "bugs": {
     "url": "https://github.com/Chronary/chronary-mcp/issues"
   },
@@ -49,11 +49,11 @@
     "@chronary/sdk": "workspace:*",
     "@chronary/toolkit": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^3.23"
+    "zod": "^4.4"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^25.9.1",
     "typescript": "^5.7.0",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.8"
   }
 }
