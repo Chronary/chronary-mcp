@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.2.2 — 2026-06-25
+
+- Add Official MCP Registry support: `mcpName: "ai.chronary/mcp"` in `package.json` (ownership-validated against the published npm tarball) and a `server.json` manifest declaring both the npx stdio package and the hosted `https://api.chronary.ai/mcp` Streamable HTTP endpoint. No behavioral change to the server itself.
+
 ## 0.1.3 — 2026-05-20
 
 - First OIDC + Sigstore provenance release. Published via npm Trusted Publishing from `Chronary/chronary-mcp`'s `release-artifact.yml`. No behavioral change vs 0.1.2 — 0.1.2 was the manual bootstrap publish (classic token, no provenance) required because npm has no Pending Publisher flow.
