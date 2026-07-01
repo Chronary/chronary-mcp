@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.chronary/mcp",
   "title": "Chronary",
-  "description": "Calendar API built for AI agents — 47 tools for events, availability, meeting-time search, scheduling proposals, availability rules, webhooks, and iCal feeds.",
-  "version": "1.2.2",
+  "description": "Calendar API for AI agents: events, availability, scheduling, webhooks, and iCal feeds.",
+  "version": "1.2.4",
   "repository": {
     "url": "https://github.com/Chronary/chronary-mcp",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@chronary/mcp",
-      "version": "1.2.2",
+      "version": "1.2.4",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -22,7 +22,7 @@
       "environmentVariables": [
         {
           "name": "CHRONARY_API_KEY",
-          "description": "Chronary API key — org key (chr_sk_...) or agent-scoped key (chr_ak_...). Request access at https://chronary.ai.",
+          "description": "Chronary API key - org key (chr_sk_...) or agent-scoped key (chr_ak_...). Request access at https://chronary.ai.",
           "isRequired": true,
           "isSecret": true
         }
