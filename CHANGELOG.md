@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.2.5 — 2026-07-06
+
+- Add `glama.json` (maintainers) so the Glama directory listing for `Chronary/chronary-mcp` can be claimed/verified (required for org-owned repos). Repo/mirror metadata only — no code change, no npm content change (glama.json + Dockerfile aren't shipped in the npm tarball). Version bump exists solely to trigger the source-tree mirror to `Chronary/chronary-mcp`.
+
 ## 1.2.4 — 2026-07-02
 
 - Add the preferred `duration` field (alias of the now-deprecated `slot_duration`) to the `get_availability` and `find_meeting_time` tool input schemas, bringing the published stdio server into parity with the hosted MCP surface at `https://api.chronary.ai/mcp`. Both aliases are accepted; sending conflicting values is rejected by the API with a 400. Fix flows in from `@chronary/toolkit@1.2.2`, which owns these schemas. Registered as `server.json` 1.2.4 (the prior 1.2.3 was a registry-metadata-only entry and registry versions are immutable), pointing at npm `@chronary/mcp@1.2.4`.

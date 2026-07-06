@@ -17,6 +17,16 @@ name: Release Artifact
 #   - GitHub artifact attestations also fire on public repos via
 #     actions/attest-build-provenance.
 #
+# Official MCP Registry posture:
+#   - After npm publish, server.json is published to the Official MCP Registry
+#     (registry.modelcontextprotocol.io) so registry-driven installs resolve the
+#     same version as npm. The `ai.chronary` namespace is DNS-verified via a TXT
+#     record on chronary.ai; publishing needs the matching Ed25519 private key as
+#     the MCP_REGISTRY_DNS_KEY repo secret (64-char hex — see README). The step is
+#     gated on publish_registry=true + public repo + the secret being present, and
+#     tolerates an already-published version (registry versions are immutable), so
+#     it is a no-op until the key is provisioned and never blocks the npm release.
+#
 # Workspace dep posture:
 #   - package.json declares @chronary/sdk and @chronary/toolkit via
 #     "workspace:*". Those only resolve inside the monorepo. The
@@ -34,6 +44,10 @@ name: Release Artifact
 #      repo `Chronary/chronary-mcp`, workflow `release-artifact.yml`,
 #      environment blank.
 #   4. NPM_TOKEN repo secret (if any) has been deleted.
+#   5. MCP_REGISTRY_DNS_KEY repo secret is set to the Ed25519 private key
+#      (64-char hex) whose public half is in the chronary.ai DNS TXT record
+#      (`v=MCPv1; k=ed25519; p=...`). Required only for the MCP Registry publish;
+#      without it that step self-skips with a warning.
 
 on:
   push:
@@ -169,3 +183,54 @@ jobs:
               --title "@chronary/mcp ${GITHUB_REF_NAME}" \
               --notes-file RELEASE_NOTES.txt
           fi
+
+      # ── Official MCP Registry (registry.modelcontextprotocol.io) ──────────────
+      # Keeps the registry entry in lockstep with npm so registry-driven installs
+      # resolve the same version. server.json (projected to the mirror root by the
+      # coordinator) declares name `ai.chronary/mcp`; the `ai.chronary` namespace
+      # is DNS-verified via a TXT record on chronary.ai, so publishing needs the
+      # matching Ed25519 private key (MCP_REGISTRY_DNS_KEY, 64-char hex).
+      #
+      # Gated on publish_registry=true + public repo. Self-skips (warning, exit 0)
+      # when the secret is absent so it never blocks the npm release before the key
+      # is provisioned. Registry versions are immutable, so an already-published
+      # version is treated as success (idempotent on re-runs / source-only bumps).
+      - name: Publish server.json to the Official MCP Registry
+        if: steps.manifest.outputs.publish_registry == 'true' && github.event.repository.visibility == 'public'
+        env:
+          MCP_REGISTRY_DNS_KEY: ${{ secrets.MCP_REGISTRY_DNS_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MCP_REGISTRY_DNS_KEY:-}" ]; then
+            echo "::warning::MCP_REGISTRY_DNS_KEY not set — skipping Official MCP Registry publish. npm + GitHub Release are done. Add the Ed25519 private key (matching the chronary.ai DNS TXT record) as a repo secret to enable this."
+            exit 0
+          fi
+          test -f server.json || { echo "::error::server.json not found in mirror tree — cannot publish to MCP Registry." >&2; exit 1; }
+
+          # Warn (don't fail) if server.json version trails the npm package version —
+          # the registry would silently no-op on an already-published version.
+          SJ_VERSION="$(node -p "require('./server.json').version")"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "${SJ_VERSION}" != "${PKG_VERSION}" ]; then
+            echo "::warning::server.json version (${SJ_VERSION}) != package.json version (${PKG_VERSION}). Registry entry may not point at the just-published npm version."
+          fi
+
+          # Install the mcp-publisher CLI (linux/amd64 on ubuntu-latest).
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+          ./mcp-publisher login dns --domain=chronary.ai --private-key="${MCP_REGISTRY_DNS_KEY}"
+
+          set +e
+          PUBLISH_OUT="$(./mcp-publisher publish 2>&1)"
+          PUBLISH_CODE=$?
+          set -e
+          echo "${PUBLISH_OUT}"
+          if [ "${PUBLISH_CODE}" -ne 0 ]; then
+            if echo "${PUBLISH_OUT}" | grep -qiE "already exists|already published|conflict|409"; then
+              echo "::notice::server.json ${SJ_VERSION} is already in the MCP Registry — treating as success (versions are immutable)."
+              exit 0
+            fi
+            echo "::error::mcp-publisher publish failed (exit ${PUBLISH_CODE})." >&2
+            exit "${PUBLISH_CODE}"
+          fi
+          echo "Published ai.chronary/mcp ${SJ_VERSION} to the Official MCP Registry."
