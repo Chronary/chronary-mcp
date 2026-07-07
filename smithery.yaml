@@ -1,0 +1,24 @@
+# Smithery listing config (https://smithery.ai) for the local/stdio server.
+# Smithery runs the PUBLISHED @chronary/mcp package via npx on the user's
+# machine with their API key as CHRONARY_API_KEY — the server then authenticates
+# to https://api.chronary.ai with `Authorization: Bearer`. No build step (avoids
+# the workspace:* deps that don't resolve in this mirror), no gateway auth needed.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - chronaryApiKey
+    properties:
+      chronaryApiKey:
+        type: string
+        title: Chronary API Key
+        description: "Your Chronary API key — chr_sk_ (org) or chr_ak_ (agent-scoped). Get one at https://chronary.ai"
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["-y", "@chronary/mcp"],
+      env: { CHRONARY_API_KEY: config.chronaryApiKey }
+    })
+  exampleConfig:
+    chronaryApiKey: chr_sk_example00000000000000000000000000000000

@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.2.6 — 2026-07-07
+
+- Add `smithery.yaml` so the server can be listed on [Smithery](https://smithery.ai) as a local/stdio server: Smithery runs `npx -y @chronary/mcp` on the user's machine with their key as `CHRONARY_API_KEY`. Repo/mirror metadata only — not in the npm tarball, no code change. Version bump exists to mirror the file to `Chronary/chronary-mcp`.
+
 ## 1.2.5 — 2026-07-06
 
 - Add `glama.json` (maintainers) so the Glama directory listing for `Chronary/chronary-mcp` can be claimed/verified (required for org-owned repos). Repo/mirror metadata only — no code change, no npm content change (glama.json + Dockerfile aren't shipped in the npm tarball). Version bump exists solely to trigger the source-tree mirror to `Chronary/chronary-mcp`.

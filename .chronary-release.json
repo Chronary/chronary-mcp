@@ -1,9 +1,9 @@
 {
   "artifact": "mcp",
-  "version": "1.2.5",
-  "public_tag": "v1.2.5",
-  "private_source_sha": "6e3910a5a0e962333c6ae85a0c73b1345e5865ee",
-  "private_release_tag": "public-release/20260706.1-6e3910a",
+  "version": "1.2.6",
+  "public_tag": "v1.2.6",
+  "private_source_sha": "2c67b47dc6ab3e3ade1fd848dc09b32d23faa373",
+  "private_release_tag": "public-release/20260707.1-2c67b47",
   "publish_registry": true,
-  "generated_at": "2026-07-06T04:39:29.875Z"
+  "generated_at": "2026-07-07T02:27:25.091Z"
 }
