@@ -3,7 +3,7 @@
   "name": "ai.chronary/mcp",
   "title": "Chronary",
   "description": "Calendar API for AI agents: events, availability, scheduling, webhooks, and iCal feeds.",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "repository": {
     "url": "https://github.com/Chronary/chronary-mcp",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@chronary/mcp",
-      "version": "1.2.6",
+      "version": "1.2.7",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

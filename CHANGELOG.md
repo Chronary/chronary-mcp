@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.2.7 — 2026-07-09
+
+- Add a [Smithery](https://smithery.ai/server/chronary/agent-calendar) badge and a one-click install one-liner to the README, and fill the package `author` field — both ship in the npm tarball. Also adds a `smithery:republish` script and a committed `smithery-remote-config.json` (repo/mirror only, not in the tarball) for refreshing the Smithery remote listing after a deploy. No code change; the hosted MCP surface at `https://api.chronary.ai/mcp` and the 47 tools are unchanged.
+
 ## 1.2.6 — 2026-07-07
 
 - Add `smithery.yaml` so the server can be listed on [Smithery](https://smithery.ai) as a local/stdio server: Smithery runs `npx -y @chronary/mcp` on the user's machine with their key as `CHRONARY_API_KEY`. Repo/mirror metadata only — not in the npm tarball, no code change. Version bump exists to mirror the file to `Chronary/chronary-mcp`.

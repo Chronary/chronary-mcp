@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["apiKey"],
+  "properties": {
+    "apiKey": {
+      "type": "string",
+      "title": "Chronary API Key",
+      "description": "Your Chronary API key (chr_sk_ org key or chr_ak_ agent key). Create one at https://console.chronary.ai",
+      "x-to": { "header": "X-Chronary-Key" }
+    }
+  }
+}

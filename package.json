@@ -1,8 +1,9 @@
 {
   "name": "@chronary/mcp",
   "mcpName": "ai.chronary/mcp",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "MCP server for Chronary — calendar tools for AI assistants (Claude Desktop, Cursor, VS Code, Windsurf)",
+  "author": "Chronary (https://chronary.ai)",
   "license": "Apache-2.0",
   "type": "module",
   "packageManager": "pnpm@9.15.4",
@@ -44,7 +45,8 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "smithery:republish": "npx -y @smithery/cli@latest mcp publish https://api.chronary.ai/mcp -n chronary/agent-calendar --config-schema smithery-remote-config.json"
   },
   "dependencies": {
     "@chronary/sdk": "workspace:*",
