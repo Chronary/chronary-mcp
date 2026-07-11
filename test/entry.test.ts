@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import packageJson from '../package.json';
+import serverJson from '../server.json';
 import { VERSION } from '../src/version';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
@@ -45,5 +46,17 @@ describe('src/index.ts', () => {
   it('uses the package version for --version and MCP server metadata', () => {
     expect(VERSION).toBe(packageJson.version);
     expect(entrySource).toContain("import { VERSION } from './version.js'");
+  });
+
+  // Regression guard: @chronary/mcp has a THIRD version source beyond
+  // package.json + src/version.ts — server.json, the Official MCP Registry
+  // manifest, which carries the version in two places (top-level + the npm
+  // package entry). A stale server.json makes the registry publish fail with
+  // "cannot publish duplicate version" AFTER npm already shipped the new
+  // version, reddening the release coordinator. All three sources must match.
+  it('keeps server.json (both version fields) in sync with package.json', () => {
+    expect(serverJson.version).toBe(packageJson.version);
+    const npmPkg = serverJson.packages.find((p) => p.identifier === '@chronary/mcp');
+    expect(npmPkg?.version).toBe(packageJson.version);
   });
 });
