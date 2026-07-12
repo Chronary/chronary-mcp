@@ -44,6 +44,8 @@ const toolkit = new ChronaryToolkit({
 
 const server = new McpServer({ name: 'chronary-mcp', version: VERSION });
 toolkit.registerAll(server);
+toolkit.registerPrompts(server);
+toolkit.registerResources(server);
 
 const transport = new StdioServerTransport();
 
