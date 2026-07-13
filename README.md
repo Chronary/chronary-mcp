@@ -4,7 +4,7 @@
 
 MCP server for [Chronary](https://chronary.ai) — calendar tools for AI assistants.
 
-Drops 47 calendar tools (manage agents, calendars, and events, find meeting times, run scheduling proposals, configure availability rules, manage webhooks, iCal subscriptions, scoped keys, audit log, and usage) into any MCP-compatible client: Claude Desktop, Cursor, VS Code Copilot, Claude Code, Windsurf.
+Drops 50 calendar tools (manage agents, calendars, and events, request human Google/Microsoft setup, find meeting times, run scheduling proposals, configure availability rules, manage webhooks, iCal subscriptions, scoped keys, audit log, and usage) into any MCP-compatible client: Claude Desktop, Cursor, VS Code Copilot, Claude Code, Windsurf.
 
 **One-click install via [Smithery](https://smithery.ai/server/chronary/agent-calendar):** `npx -y @smithery/cli mcp add chronary/agent-calendar --client claude` (swap `--client` for `cursor`, `vscode`, `claude-code`, `windsurf`, …).
 
@@ -186,11 +186,11 @@ Edit `~/.codeium/windsurf/mcp_config.json` (`%USERPROFILE%\.codeium\windsurf\mcp
 }
 ```
 
-> **Windsurf limit:** Cascade enforces a hard cap of 100 total tools across all MCP servers and 20 tool calls per prompt. Chronary exposes 47; consider `--tools` filtering if you stack multiple servers.
+> **Windsurf limit:** Cascade enforces a hard cap of 100 total tools across all MCP servers and 20 tool calls per prompt. Chronary exposes 50; consider `--tools` filtering if you stack multiple servers.
 
 ## Reducing context with `--tools`
 
-Exposing all 47 tools uses LLM tokens on every request. For focused workflows, whitelist only what you need:
+Exposing all 50 tools uses LLM tokens on every request. For focused workflows, whitelist only what you need:
 
 ```json
 {

@@ -83,7 +83,7 @@ Environment:
   CHRONARY_API_KEY   Required. Your Chronary API key (chr_sk_...).
 
 Options:
-  --tools <names>    Comma-separated list of tool names to expose (default: all 47 tools).
+  --tools <names>    Comma-separated list of tool names to expose (default: all 50 tools).
                      Example: --tools list_events,find_meeting_time,create_event
   --base-url <url>   Override the API base URL (default: https://api.chronary.ai).
   --version, -v      Print version and exit.

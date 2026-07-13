@@ -2,9 +2,14 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.4.0 — 2026-07-12
+
+- Add the three human-calendar setup-link tools inherited from `@chronary/toolkit`, bringing the hosted and stdio surfaces to 50 tools.
+- Document fail-closed combined availability and Google/Microsoft human consent.
+
 ## 1.2.7 — 2026-07-09
 
-- Add a [Smithery](https://smithery.ai/server/chronary/agent-calendar) badge and a one-click install one-liner to the README, and fill the package `author` field — both ship in the npm tarball. Also adds a `smithery:republish` script and a committed `smithery-remote-config.json` (repo/mirror only, not in the tarball) for refreshing the Smithery remote listing after a deploy. No code change; the hosted MCP surface at `https://api.chronary.ai/mcp` and the 47 tools are unchanged.
+- Add a [Smithery](https://smithery.ai/server/chronary/agent-calendar) badge and a one-click install one-liner to the README, and fill the package `author` field — both ship in the npm tarball. Also adds a `smithery:republish` script and a committed `smithery-remote-config.json` (repo/mirror only, not in the tarball) for refreshing the Smithery remote listing after a deploy. No code change; the then-current hosted MCP surface was unchanged.
 
 ## 1.2.6 — 2026-07-07
 
