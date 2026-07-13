@@ -59,4 +59,9 @@ describe('src/index.ts', () => {
     const npmPkg = serverJson.packages.find((p) => p.identifier === '@chronary/mcp');
     expect(npmPkg?.version).toBe(packageJson.version);
   });
+
+  it('keeps the Official MCP Registry description valid', () => {
+    expect(serverJson.description.length).toBeLessThanOrEqual(100);
+    expect(serverJson.description).toMatch(/^[\x00-\x7F]*$/);
+  });
 });

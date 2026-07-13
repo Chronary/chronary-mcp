@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.chronary/mcp",
   "title": "Chronary",
-  "description": "Calendar API for AI agents: events, combined human availability, Google/Microsoft setup links, scheduling, webhooks, and iCal feeds.",
-  "version": "1.4.0",
+  "description": "Calendar API for AI agents: events, availability, Google/Microsoft setup, scheduling, and iCal.",
+  "version": "1.4.1",
   "repository": {
     "url": "https://github.com/Chronary/chronary-mcp",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@chronary/mcp",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

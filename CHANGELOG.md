@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.4.1 — 2026-07-12
+
+- Shorten the Official MCP Registry description to its 100-character limit. No MCP behavior changes from 1.4.0.
+
 ## 1.4.0 — 2026-07-12
 
 - Add the three human-calendar setup-link tools inherited from `@chronary/toolkit`, bringing the hosted and stdio surfaces to 50 tools.

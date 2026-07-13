@@ -1,7 +1,7 @@
 {
   "name": "@chronary/mcp",
   "mcpName": "ai.chronary/mcp",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "MCP server for Chronary — calendar tools for AI assistants (Claude Desktop, Cursor, VS Code, Windsurf)",
   "author": "Chronary (https://chronary.ai)",
   "license": "Apache-2.0",
