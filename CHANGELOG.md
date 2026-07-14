@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.5.2 — 2026-07-14
+
+- Pick up `@chronary/toolkit@1.5.2` (availability + connection-link tool descriptions now match the hosted MCP verbatim). No tool-surface change; still 54 tools.
+
 ## 1.5.1 — 2026-07-14
 
 - Pick up `@chronary/toolkit@1.5.1` (neutral booking-page tool wording). No tool-surface change; still 54 tools.
