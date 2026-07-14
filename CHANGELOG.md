@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.5.0 — 2026-07-14
+
+- Add booking-page tools (`create_booking_page`, `list_booking_pages`, `get_booking_page`, `delete_booking_page`), bringing the hosted and stdio surfaces to 54 tools (#1036).
+
 ## 1.4.1 — 2026-07-12
 
 - Shorten the Official MCP Registry description to its 100-character limit. No MCP behavior changes from 1.4.0.
