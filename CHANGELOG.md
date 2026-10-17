@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.5.3 — 2026-10-16
+
+- Bump `@modelcontextprotocol/sdk` floor to `^1.32.1` (#1104). No tool-surface change; still 54 tools.
+
 ## 1.5.2 — 2026-07-14
 
 - Pick up `@chronary/toolkit@1.5.2` (availability + connection-link tool descriptions now match the hosted MCP verbatim). No tool-surface change; still 54 tools.
