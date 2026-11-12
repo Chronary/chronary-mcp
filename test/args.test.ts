@@ -76,6 +76,25 @@ describe('parseArgs', () => {
     if (result.ok) expect(result.value.baseUrl).toBe('http://localhost:8787');
   });
 
+  it.each(['https://api-dev.chronary.ai', 'http://127.0.0.1:8787', 'http://[::1]:8787', 'http://LOCALHOST:8787'])(
+    'accepts --base-url %s (https, or http to loopback)',
+    (url) => {
+      const result = parseArgs(['--base-url', url]);
+      expect(result.ok).toBe(true);
+    },
+  );
+
+  // #1675: the API key rides the Authorization header, so plain http to a
+  // network host would send it in clear text.
+  it.each(['http://example.com', 'http://api.chronary.ai', 'http://localhost.example.com', 'http://10.0.0.5:8787', 'ftp://example.com'])(
+    'rejects --base-url %s (not https and not loopback http)',
+    (url) => {
+      const result = parseArgs(['--base-url', url]);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error).toMatch(/must use https/);
+    },
+  );
+
   it('rejects --base-url with no value', () => {
     const result = parseArgs(['--base-url']);
     expect(result.ok).toBe(false);

@@ -5,7 +5,7 @@ console.log = console.error;
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ChronaryToolkit } from '@chronary/toolkit/mcp';
+import { ChronaryToolkit, MCP_SERVER_INSTRUCTIONS } from '@chronary/toolkit/mcp';
 import { parseArgs, HELP_TEXT } from './args.js';
 import { VERSION } from './version.js';
 
@@ -42,7 +42,12 @@ const toolkit = new ChronaryToolkit({
   extraHeaders: { 'X-Chronary-Client': `chronary-mcp/${VERSION}` },
 });
 
-const server = new McpServer({ name: 'chronary-mcp', version: VERSION });
+// Same server instructions as the hosted server, including the rule that
+// third-party event and webhook text is data, not instructions (#1621).
+const server = new McpServer(
+  { name: 'chronary-mcp', version: VERSION },
+  { instructions: MCP_SERVER_INSTRUCTIONS },
+);
 toolkit.registerAll(server);
 toolkit.registerPrompts(server);
 toolkit.registerResources(server);

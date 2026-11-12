@@ -13,7 +13,7 @@ startCommand:
       chronaryApiKey:
         type: string
         title: Chronary API Key
-        description: "Your Chronary API key — chr_sk_ (org) or chr_ak_ (agent-scoped). Get one at https://chronary.ai"
+        description: "Your Chronary API key — chr_sk_ (Organization key) or chr_ak_ (Agent key). Get one at https://chronary.ai"
   commandFunction: |-
     (config) => ({
       command: "npx",

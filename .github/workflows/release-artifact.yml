@@ -26,6 +26,10 @@ name: Release Artifact
 #     gated on publish_registry=true + public repo + the secret being present, and
 #     tolerates an already-published version (registry versions are immutable), so
 #     it is a no-op until the key is provisioned and never blocks the npm release.
+#     It waits for the new npm version to resolve before publishing, because the
+#     registry validates against npm and a fresh publish can briefly 404.
+#   - npm publish and GitHub Release creation skip when their output already
+#     exists, so a run that failed at the registry step can simply be re-run.
 #
 # Workspace dep posture:
 #   - package.json declares @chronary/sdk and @chronary/toolkit via
@@ -54,24 +58,31 @@ on:
     tags:
       - 'v*'
 
+# Least privilege (#1599): read-only by default; the release job raises
+# only the scopes its steps use.
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 jobs:
   release:
+    # contents: write for `gh release create`; id-token + attestations for
+    # OIDC registry publishing and actions/attest-build-provenance.
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
+          # Nothing pushes with the checkout token, so keep it out of
+          # .git/config, where install and test scripts could read it (#1659).
+          persist-credentials: false
 
-      - uses: pnpm/action-setup@v4.1.0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
@@ -164,17 +175,35 @@ jobs:
 
       - name: Attest build provenance for npm tarball
         if: steps.manifest.outputs.publish_registry == 'true' && github.event.repository.visibility == 'public'
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         with:
           subject-path: '*.tgz'
 
+      # Publish and Create GitHub Release skip when their output already exists,
+      # so a job that failed on a later step (e.g. the MCP Registry publish) can
+      # be re-run without tripping over the immutable npm version / existing release.
       - name: Publish to npm
         if: steps.manifest.outputs.publish_registry == 'true'
-        run: npm publish *.tgz --provenance --access public
+        run: |
+          set -euo pipefail
+          PKG_NAME="$(node -p "require('./package.json').name")"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$(npm view "${PKG_NAME}@${PKG_VERSION}" version 2>/dev/null || true)" = "${PKG_VERSION}" ]; then
+            echo "::notice::${PKG_NAME}@${PKG_VERSION} is already on npm — skipping publish (re-run)."
+            exit 0
+          fi
+          npm publish *.tgz --provenance --access public
 
       - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_REGISTRY: ${{ steps.manifest.outputs.publish_registry }}
         run: |
-          if [ "${{ steps.manifest.outputs.publish_registry }}" = "true" ]; then
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "::notice::GitHub Release ${GITHUB_REF_NAME} already exists — skipping (re-run)."
+            exit 0
+          fi
+          if [ "$PUBLISH_REGISTRY" = "true" ]; then
             gh release create "${GITHUB_REF_NAME}" *.tgz \
               --title "@chronary/mcp ${GITHUB_REF_NAME}" \
               --notes-file RELEASE_NOTES.txt
@@ -220,17 +249,46 @@ jobs:
 
           ./mcp-publisher login dns --domain=chronary.ai --private-key="${MCP_REGISTRY_DNS_KEY}"
 
-          set +e
-          PUBLISH_OUT="$(./mcp-publisher publish 2>&1)"
-          PUBLISH_CODE=$?
-          set -e
-          echo "${PUBLISH_OUT}"
-          if [ "${PUBLISH_CODE}" -ne 0 ]; then
+          # The registry validates the npm package by fetching it, and a version
+          # npm just accepted can 404 for a while after `npm publish` returns
+          # (v1.5.3 failed this way). Wait for it to resolve before publishing.
+          # Probe the npm package server.json points at — that's what the registry checks.
+          NPM_ID="$(node -p "require('./server.json').packages.find(p => p.registryType === 'npm').identifier")"
+          NPM_VERSION="$(node -p "require('./server.json').packages.find(p => p.registryType === 'npm').version")"
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null "https://registry.npmjs.org/${NPM_ID}/${NPM_VERSION}"; then
+              break
+            fi
+            if [ "${i}" -eq 30 ]; then
+              echo "::error::${NPM_ID}@${NPM_VERSION} still not resolvable on registry.npmjs.org after 5 minutes." >&2
+              exit 1
+            fi
+            echo "Waiting for ${NPM_ID}@${NPM_VERSION} to appear on npm (attempt ${i}/30)…"
+            sleep 10
+          done
+
+          # Retry the publish too: the registry may read npm through a different
+          # cache than the probe above.
+          for attempt in 1 2 3 4 5; do
+            set +e
+            PUBLISH_OUT="$(./mcp-publisher publish 2>&1)"
+            PUBLISH_CODE=$?
+            set -e
+            echo "${PUBLISH_OUT}"
+            if [ "${PUBLISH_CODE}" -eq 0 ]; then
+              echo "Published ai.chronary/mcp ${SJ_VERSION} to the Official MCP Registry."
+              exit 0
+            fi
             if echo "${PUBLISH_OUT}" | grep -qiE "already exists|already published|conflict|409"; then
               echo "::notice::server.json ${SJ_VERSION} is already in the MCP Registry — treating as success (versions are immutable)."
               exit 0
             fi
-            echo "::error::mcp-publisher publish failed (exit ${PUBLISH_CODE})." >&2
-            exit "${PUBLISH_CODE}"
-          fi
-          echo "Published ai.chronary/mcp ${SJ_VERSION} to the Official MCP Registry."
+            if [ "${attempt}" -lt 5 ] && echo "${PUBLISH_OUT}" | grep -qiE "was not found|status: 404"; then
+              echo "Registry can't see the npm version yet — retrying in 30s (attempt ${attempt}/5)…"
+              sleep 30
+              continue
+            fi
+            break
+          done
+          echo "::error::mcp-publisher publish failed (exit ${PUBLISH_CODE})." >&2
+          exit "${PUBLISH_CODE}"

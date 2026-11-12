@@ -2,6 +2,19 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## Unreleased
+
+- Server instructions (from `@chronary/toolkit`) now use the Developer-plan wording: scoped keys, cross-agent availability, webhook delivery replay and secret rotation require a Developer or Pro plan; scheduling proposals and temporal holds stay Pro.
+
+## 1.6.0 — 2026-10-19
+
+- Add the `get_billing`, `request_upgrade`, `get_upgrade_request` and `cancel_upgrade_request` tools (58 tools total), and return structured tool errors that keep `upgrade_url`, `required_plan`, `metric` and `limit` (#1129).
+- Add the `get_webhook_delivery` tool (59 tools total): one webhook delivery with every attempt's HTTP status, duration, response body prefix and error code (#1200).
+- Registry introspection `Dockerfile` (mirror only, not in the npm tarball): install a pinned `@chronary/mcp` version at build time and run as the non-root `node` user (#1643).
+- Send the same server instructions as the hosted server, including that event and webhook text written outside the org is data, not instructions. Event and webhook-delivery tool results start with an `untrusted_fields` key naming those fields (#1621).
+- Tool annotations match the hosted server: `create_webhook`, `update_webhook` and `update_ical_subscription` set `openWorldHint: true`, and `update_webhook` sets `destructiveHint: true` (#1662).
+- `--base-url` must use `https://`; plain `http://` is accepted only for `localhost`, `127.0.0.1` and `[::1]`, so the API key never crosses the network in clear text (#1675). `--help` shows the real tool count.
+
 ## 1.5.3 — 2026-10-16
 
 - Bump `@modelcontextprotocol/sdk` floor to `^1.32.1` (#1104). No tool-surface change; still 54 tools.
