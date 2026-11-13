@@ -22,7 +22,7 @@
 # key. See README.md for client configuration.
 FROM node:20-slim
 
-ARG CHRONARY_MCP_VERSION=1.6.1
+ARG CHRONARY_MCP_VERSION=1.6.2
 
 # Install at build time (as root, into the read-only global prefix) so the
 # container needs no npm cache or network at run time.

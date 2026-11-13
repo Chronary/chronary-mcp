@@ -4,6 +4,7 @@ All notable changes to `@chronary/mcp` will be documented in this file starting 
 
 ## Unreleased
 
+- README: drop the Smithery badge and one-click line (the Smithery listing page and badge now return 404) and point to the Official MCP Registry entry `ai.chronary/mcp` instead (#1999). No code change.
 - Ships `@chronary/sdk` 0.9.0: a 429 `quota_exceeded` (a monthly plan limit) is no longer retried, so a tool call at the cap fails at once with the quota error and its upgrade hints instead of sleeping on `Retry-After` (#1936).
 - Server instructions (from `@chronary/toolkit`) now use the Developer-plan wording: scoped keys, cross-agent availability, webhook delivery replay and secret rotation require a Developer or Pro plan; scheduling proposals and temporal holds stay Pro.
 

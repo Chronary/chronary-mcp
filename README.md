@@ -1,12 +1,10 @@
 # @chronary/mcp
 
-[![Smithery](https://smithery.ai/badge/chronary/agent-calendar)](https://smithery.ai/server/chronary/agent-calendar)
-
 MCP server for [Chronary](https://chronary.ai) — calendar tools for AI assistants.
 
 Drops 65 calendar tools (manage agents, calendars, and events, request human Google/Microsoft setup, find meeting times, run scheduling proposals, configure availability rules, manage webhooks, iCal subscriptions, scoped keys, audit log, usage, and billing status with ask-your-human upgrade requests) into any MCP-compatible client: Claude Desktop, Cursor, VS Code Copilot, Claude Code, Windsurf.
 
-**One-click install via [Smithery](https://smithery.ai/server/chronary/agent-calendar):** `npx -y @smithery/cli mcp add chronary/agent-calendar --client claude` (swap `--client` for `cursor`, `vscode`, `claude-code`, `windsurf`, …).
+Published to the [Official MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers/ai.chronary%2Fmcp/versions/latest) as `ai.chronary/mcp`, so registry-aware clients and directories can install it by that name.
 
 ## Prerequisites
 
