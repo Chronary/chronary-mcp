@@ -4,6 +4,7 @@ All notable changes to `@chronary/mcp` will be documented in this file starting 
 
 ## Unreleased
 
+- Ships `@chronary/sdk` 0.9.0: a 429 `quota_exceeded` (a monthly plan limit) is no longer retried, so a tool call at the cap fails at once with the quota error and its upgrade hints instead of sleeping on `Retry-After` (#1936).
 - Server instructions (from `@chronary/toolkit`) now use the Developer-plan wording: scoped keys, cross-agent availability, webhook delivery replay and secret rotation require a Developer or Pro plan; scheduling proposals and temporal holds stay Pro.
 
 ## 1.6.0 — 2026-10-19
