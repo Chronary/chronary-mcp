@@ -2,7 +2,13 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## Unreleased
+## 1.7.0 — 2026-11-16
+
+- `create_event` and `update_event` take `timezone` (IANA, e.g. `"America/Los_Angeles"`; `null` on update for UTC), from `@chronary/toolkit` 1.7.0: a recurring series repeats on local wall time across daylight-saving changes (#2276).
+- The `recurrence_rule` descriptions say a series edit now keeps cancelled occurrences on their local date and lists any that no longer match in `droppedExdates` (#2277).
+- Ships `@chronary/sdk` 0.11.0. Still 65 tools.
+
+## 1.6.2
 
 - README: drop the Smithery badge and one-click line (the Smithery listing page and badge now return 404) and point to the Official MCP Registry entry `ai.chronary/mcp` instead (#1999). No code change.
 - Ships `@chronary/sdk` 0.9.0: a 429 `quota_exceeded` (a monthly plan limit) is no longer retried, so a tool call at the cap fails at once with the quota error and its upgrade hints instead of sleeping on `Retry-After` (#1936).
