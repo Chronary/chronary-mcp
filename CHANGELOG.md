@@ -2,6 +2,10 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.7.1 — 2026-11-16
+
+- Server instructions and proposal tool descriptions (from `@chronary/toolkit` 1.7.1): scheduling proposals and temporal holds need a Developer or Pro plan, not Pro; `cancel_proposal` works on every plan (#2331). Still 65 tools.
+
 ## 1.7.0 — 2026-11-16
 
 - `create_event` and `update_event` take `timezone` (IANA, e.g. `"America/Los_Angeles"`; `null` on update for UTC), from `@chronary/toolkit` 1.7.0: a recurring series repeats on local wall time across daylight-saving changes (#2276).
