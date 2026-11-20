@@ -3,7 +3,7 @@
   "name": "ai.chronary/mcp",
   "title": "Chronary",
   "description": "Calendar API for AI agents: events, availability, Google/Microsoft setup, scheduling, and iCal.",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "repository": {
     "url": "https://github.com/Chronary/chronary-mcp",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@chronary/mcp",
-      "version": "1.7.1",
+      "version": "1.8.0",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -22,8 +22,8 @@
       "environmentVariables": [
         {
           "name": "CHRONARY_API_KEY",
-          "description": "Chronary API key - Organization key (chr_sk_...) or Agent key (chr_ak_...). Request access at https://chronary.ai.",
-          "isRequired": true,
+          "description": "Chronary API key - Organization key (chr_sk_...) or Agent key (chr_ak_...). Optional: without it the server offers sign_up_anonymous, a no-email sign-up a person claims later.",
+          "isRequired": false,
           "isSecret": true
         }
       ]

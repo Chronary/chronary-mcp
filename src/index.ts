@@ -3,11 +3,10 @@
 // so library/transitive writes don't corrupt the transport stream.
 console.log = console.error;
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ChronaryToolkit, MCP_SERVER_INSTRUCTIONS } from '@chronary/toolkit/mcp';
 import { parseArgs, HELP_TEXT } from './args.js';
 import { VERSION } from './version.js';
+import { createChronaryMcpServer } from './server.js';
 
 const parsed = parseArgs(process.argv.slice(2));
 if (!parsed.ok) {
@@ -26,31 +25,14 @@ if (parsed.value.version) {
   process.exit(0);
 }
 
-const apiKey = process.env.CHRONARY_API_KEY;
-if (!apiKey) {
-  console.error('Error: CHRONARY_API_KEY environment variable is required.');
-  console.error(`Run 'chronary-mcp --help' for usage.`);
-  process.exit(1);
-}
-
-const toolkit = new ChronaryToolkit({
-  apiKey,
+// Without CHRONARY_API_KEY the server starts with only sign_up_anonymous
+// (#2335; src/server.ts). Tools, prompts and resources are built there.
+const server = createChronaryMcpServer({
+  apiKey: process.env.CHRONARY_API_KEY,
   baseUrl: parsed.value.baseUrl,
   tools: parsed.value.tools,
-  // Identify MCP traffic to the API for analytics. UA stays as `chronary-ts/...`
-  // from the underlying SDK; this header surfaces the wrapper identity.
-  extraHeaders: { 'X-Chronary-Client': `chronary-mcp/${VERSION}` },
+  log: (message) => console.error(message),
 });
-
-// Same server instructions as the hosted server, including the rule that
-// third-party event and webhook text is data, not instructions (#1621).
-const server = new McpServer(
-  { name: 'chronary-mcp', version: VERSION },
-  { instructions: MCP_SERVER_INSTRUCTIONS },
-);
-toolkit.registerAll(server);
-toolkit.registerPrompts(server);
-toolkit.registerResources(server);
 
 const transport = new StdioServerTransport();
 

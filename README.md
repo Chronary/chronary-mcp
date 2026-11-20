@@ -12,6 +12,26 @@ Published to the [Official MCP Registry](https://registry.modelcontextprotocol.i
 2. An API key from the console (starts with `chr_sk_`).
 3. Node.js ≥ 18 on the machine where the MCP client runs.
 
+No account yet? The server can also start without a key (see [Start without a key](#start-without-a-key)).
+
+## Start without a key
+
+If you leave `CHRONARY_API_KEY` unset, the server starts with a single tool, `sign_up_anonymous`. When the agent calls it:
+
+1. It signs up with no email and creates a **claimable** calendar organization. The key works at once at Sandbox limits.
+2. It loads every calendar tool with the new key in the same session (clients get `notifications/tools/list_changed`).
+3. It returns `api_key`, `claim_url` and `expires_at`.
+
+Then:
+
+- **Claim it.** The agent gives `claim_url` to the person who should own the calendar. When that person opens it while signed in to the [console](https://console.chronary.ai), the agent, calendar and events move into their account, and the key stops working. The link works once.
+- **Or let it expire.** If nobody claims it within 72 hours, the key stops working and the data is deleted.
+- **Know the limits.** The organization sends no email and cannot create webhook endpoints.
+- **Keep the key.** The key lives only in the running server. To keep it across restarts, put it in your client config as `CHRONARY_API_KEY`.
+- **Terms.** Calling the tool accepts the [Terms of Service](https://chronary.ai/terms) for the person or organization the agent acts for.
+
+The no-email sign-up is not switched on everywhere. Where it is off, the tool returns `anonymous_signup_disabled`. Guide: https://docs.chronary.ai/guides/claimable-calendars/
+
 ## Client configurations
 
 All examples use `npx -y @chronary/mcp`, which downloads and runs the latest version on demand. No install step required.
@@ -261,7 +281,7 @@ Some event and webhook text is written by people outside your organization: a bo
 
 **"spawn npx ENOENT" on Windows** — use the `cmd /c npx ...` form shown above.
 
-**"CHRONARY_API_KEY is required"** — the env block must be nested under the server entry, not at the top of the config file.
+**Only `sign_up_anonymous` shows up** — the server did not get a key (it logs "CHRONARY_API_KEY is not set" to stderr). The env block must be nested under the server entry, not at the top of the config file.
 
 **Tools aren't showing up** — restart the MCP client after editing the config. Most clients only read the config on startup.
 

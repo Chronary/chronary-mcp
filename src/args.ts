@@ -92,7 +92,11 @@ Usage:
   chronary-mcp [options]
 
 Environment:
-  CHRONARY_API_KEY   Required. Your Chronary API key (chr_sk_...).
+  CHRONARY_API_KEY   Your Chronary API key (chr_sk_... or chr_ak_...).
+                     Without it the server offers one tool, sign_up_anonymous:
+                     it signs up with no email (a claimable calendar, deleted
+                     after 72 hours unless a person claims it) and then loads
+                     every tool with the new key.
 
 Options:
   --tools <names>    Comma-separated list of tool names to expose (default: all ${TOOL_NAMES.length} tools).

@@ -2,6 +2,23 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
+## 1.8.0 — unreleased
+
+- `CHRONARY_API_KEY` is now optional (#2335). Without it, the server no longer exits. It starts with one tool, `sign_up_anonymous` (`agent_name?`, `tos_version?`), plus the usual prompts and resources.
+- `sign_up_anonymous` signs up with no email through `POST /v1/agent/sign-up/anonymous`:
+  - It returns `api_key`, `org_id`, `agent_id`, `claim_url`, `expires_at`, `plan` and `next_steps`.
+  - On success it loads the full tool set (still filtered by `--tools`) with the new key in the same process, then removes itself. Clients receive `notifications/tools/list_changed`.
+  - The organization runs on Sandbox limits, with no email and no webhook endpoints.
+  - Give `claim_url` to the person who should own the calendar. If nobody claims it, the key stops working and the data is deleted after 72 hours.
+  - The key lives only in the running process, so set `CHRONARY_API_KEY` to keep it.
+  - Calling the tool accepts the Terms of Service for the person or organization the agent acts for.
+  - Without a `tos_version`, it uses the current version and retries once on 409 `tos_version_stale`. A `tos_version` you pass is never swapped: its 409 comes back with `current_version`.
+  - It never retries a refusal (503) or a per-network 429.
+  - A lost response (timeout or connection error) returns `connection_error`, with a hint: the organization may already exist, and calling again creates another one.
+  - The server is built in `src/server.ts` (`createChronaryMcpServer`), so tests drive the same server in process.
+  - Started with a key, the server is unchanged: still 65 tools.
+- `server.json`: `CHRONARY_API_KEY` is `isRequired: false`.
+
 ## 1.7.1 — 2026-11-16
 
 - Server instructions and proposal tool descriptions (from `@chronary/toolkit` 1.7.1): scheduling proposals and temporal holds need a Developer or Pro plan, not Pro; `cancel_proposal` works on every plan (#2331). Still 65 tools.

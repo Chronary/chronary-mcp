@@ -16,13 +16,14 @@
 # and the release coordinator's versionChecks (.github/public-artifacts.json)
 # both fail when the two drift, so bump this line with every version bump.
 #
-# CHRONARY_API_KEY is required for the server to boot, but tools/list returns
-# the static tool definitions without calling the API, so a placeholder value is
-# sufficient for introspection. Real usage supplies a genuine chr_sk_ / chr_ak_
-# key. See README.md for client configuration.
+# Without CHRONARY_API_KEY the server boots with only the sign_up_anonymous tool
+# (1.8.0+), so a placeholder key is set: tools/list then returns every static
+# tool definition without calling the API, which is what introspection should
+# show. Real usage supplies a genuine chr_sk_ / chr_ak_ key, or none to sign up
+# without an email. See README.md for client configuration.
 FROM node:20-slim
 
-ARG CHRONARY_MCP_VERSION=1.7.1
+ARG CHRONARY_MCP_VERSION=1.8.0
 
 # Install at build time (as root, into the read-only global prefix) so the
 # container needs no npm cache or network at run time.
