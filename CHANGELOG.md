@@ -2,7 +2,13 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## 1.8.1 — unreleased
+## 1.8.2 — unreleased
+
+- `delete_calendar` (from `@chronary/toolkit` 1.7.4) says that the calendar's booking pages are deleted too and their public links stop working (#2545). Still 65 tools.
+- `create_event` and `update_event` (from `@chronary/toolkit` 1.7.4) describe how all-day events are stored: whole UTC days on the written dates, at least one day, a `T23:59:59` end covering that day. When moving an all-day event with a non-UTC offset, send `all_day: true` in the same call (#2566). Still 65 tools.
+- **A tool call can no longer reach another resource through an ID (#2519).** With `@chronary/toolkit` 1.7.4 and `@chronary/sdk` 0.13.2, every ID argument must be a Chronary ID (letters, digits, `_`, `-`), and the SDK encodes every path segment. A prompt-injected `cancel_event` with `event_id: "../agents/agt_main"` used to send `DELETE /v1/agents/agt_main` even with `--tools list_events,get_event,cancel_event`; it is now refused before any request. Still 65 tools.
+
+## 1.8.1 — 2026-11-22
 
 - Every tool that is not read-only now sets `destructiveHint: true`, as the Claude connectors directory requires (a `title` plus `readOnlyHint: true` or `destructiveHint: true` on every tool). That is the 37 write tools from `@chronary/toolkit` 1.7.3 and `sign_up_anonymous`. Read-only tools are unchanged. Clients that confirm destructive actions now ask before creates and updates too (#2608). Still 65 tools.
 - `create_booking_page` (from `@chronary/toolkit` 1.7.3) refuses `availability_constraints` the hosted API rejects: keys must be `mon` to `sun`, times `HH:MM` 24-hour with end after start, at least one day (#2525).
