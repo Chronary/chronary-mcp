@@ -2,7 +2,11 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## 1.8.2 — unreleased
+## 1.8.3 — unreleased
+
+- `get_audit_log` (from `@chronary/toolkit` 1.7.5) accepts `actor_type: "oauth_app"`: entries made by an app connected to the hosted MCP server by signing in, such as Claude (#2254). Still 65 tools.
+
+## 1.8.2 — 2026-11-22
 
 - `delete_calendar` (from `@chronary/toolkit` 1.7.4) says that the calendar's booking pages are deleted too and their public links stop working (#2545). Still 65 tools.
 - `create_event` and `update_event` (from `@chronary/toolkit` 1.7.4) describe how all-day events are stored: whole UTC days on the written dates, at least one day, a `T23:59:59` end covering that day. When moving an all-day event with a non-UTC offset, send `all_day: true` in the same call (#2566). Still 65 tools.
