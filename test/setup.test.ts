@@ -168,7 +168,7 @@ describe('registerSetupTool', () => {
     expect(tool.config.description).toBe(SETUP_TOOL_DESCRIPTION);
     expect(SETUP_TOOL_DESCRIPTION).toMatch(/accepts the Terms of Service/);
     expect(SETUP_TOOL_DESCRIPTION).toMatch(/72 hours/);
-    expect(tool.config.annotations).toMatchObject({ openWorldHint: true, readOnlyHint: false, destructiveHint: false });
+    expect(tool.config.annotations).toMatchObject({ openWorldHint: true, readOnlyHint: false, destructiveHint: true });
     expect(Object.keys(tool.config.inputSchema as object).sort()).toEqual(['agent_name', 'tos_version']);
   });
 
@@ -360,6 +360,33 @@ describe('keyless start, end to end in process', () => {
     } finally {
       await mcp.close();
       await server.close();
+    }
+  });
+
+  // Claude connectors directory rule (#2608): every tool has a title and is
+  // either read-only or destructive, never neither (and never both).
+  it('every listed tool, keyless or keyed, has a title and readOnlyHint XOR destructiveHint', async () => {
+    const offending = (tools: Array<{ name: string; annotations?: Record<string, unknown> }>) =>
+      tools
+        .filter((t) => {
+          const a = t.annotations ?? {};
+          const title = typeof a.title === 'string' ? a.title.trim() : '';
+          return !title || (a.readOnlyHint === true) === (a.destructiveHint === true);
+        })
+        .map((t) => `${t.name} ${JSON.stringify(t.annotations)}`);
+    const keyless = await connect({ baseUrl: BASE, log: vi.fn() });
+    const keyed = await connect({ apiKey: 'chr_sk_test', baseUrl: BASE });
+    try {
+      const keylessTools = (await keyless.mcp.listTools()).tools;
+      const keyedTools = (await keyed.mcp.listTools()).tools;
+      expect(keylessTools.map((t) => t.name)).toEqual([SETUP_TOOL_NAME]);
+      expect(keyedTools).toHaveLength(TOOL_NAMES.length);
+      expect(offending([...keylessTools, ...keyedTools])).toEqual([]);
+    } finally {
+      await keyless.mcp.close();
+      await keyless.server.close();
+      await keyed.mcp.close();
+      await keyed.server.close();
     }
   });
 

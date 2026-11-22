@@ -30,7 +30,7 @@ Then:
 - **Keep the key.** The key lives only in the running server. To keep it across restarts, put it in your client config as `CHRONARY_API_KEY`.
 - **Terms.** Calling the tool accepts the [Terms of Service](https://chronary.ai/terms) for the person or organization the agent acts for.
 
-The no-email sign-up is not switched on everywhere. Where it is off, the tool returns `anonymous_signup_disabled`. Guide: https://docs.chronary.ai/guides/claimable-calendars/
+The no-email sign-up can be switched off at times. Where it is off, the tool returns `anonymous_signup_disabled`. Guide: https://docs.chronary.ai/guides/claimable-calendars/
 
 ## Client configurations
 
@@ -240,38 +240,47 @@ For self-hosted Chronary instances or development against a local API. The URL m
 | Tool | Read-only | Destructive |
 |------|-----------|-------------|
 | `list_calendars`, `get_calendar` | ✓ | |
-| `create_calendar`, `update_calendar` | | |
+| `create_calendar`, `update_calendar` | | ✓ |
 | `delete_calendar` | | ✓ |
 | `list_events`, `list_org_events`, `get_event` | ✓ | |
-| `create_event`, `update_event`, `confirm_event` | | |
+| `create_event`, `update_event`, `confirm_event` | | ✓ |
 | `cancel_event`, `release_event` | | ✓ |
 | `list_agents`, `get_agent` | ✓ | |
-| `create_agent`, `update_agent` | | |
+| `create_agent`, `update_agent` | | ✓ |
 | `delete_agent` | | ✓ |
 | `get_availability`, `find_meeting_time` | ✓ | |
 | `get_calendar_context` | ✓ | |
 | `list_proposals`, `get_proposal` | ✓ | |
-| `create_proposal`, `respond_to_proposal`, `resolve_proposal` | | |
+| `create_proposal`, `respond_to_proposal`, `resolve_proposal` | | ✓ |
 | `cancel_proposal` | | ✓ |
 | `get_availability_rules` | ✓ | |
-| `set_availability_rules` | | |
+| `set_availability_rules` | | ✓ |
 | `clear_availability_rules` | | ✓ |
 | `list_webhooks`, `get_webhook`, `list_webhook_deliveries`, `get_webhook_delivery` | ✓ | |
-| `create_webhook`, `send_test_webhook`, `replay_webhook_delivery` | | |
+| `create_webhook`, `send_test_webhook`, `replay_webhook_delivery` | | ✓ |
 | `update_webhook` | | ✓ |
 | `delete_webhook` | | ✓ |
 | `list_ical_subscriptions`, `get_ical_subscription` | ✓ | |
-| `subscribe_ical`, `update_ical_subscription`, `sync_ical_subscription`, `pause_ical_subscription`, `resume_ical_subscription` | | |
+| `subscribe_ical`, `update_ical_subscription`, `sync_ical_subscription`, `pause_ical_subscription`, `resume_ical_subscription` | | ✓ |
 | `delete_ical_subscription` | | ✓ |
 | `list_scoped_keys` | ✓ | |
-| `create_scoped_key` | | |
+| `create_scoped_key` | | ✓ |
 | `revoke_scoped_key` | | ✓ |
 | `get_audit_log` | ✓ | |
-| `accept_terms` | | |
+| `accept_terms` | | ✓ |
 | `get_usage` | ✓ | |
 | `get_usage_history` | ✓ | |
+| `list_booking_pages`, `get_booking_page` | ✓ | |
+| `create_booking_page` | | ✓ |
+| `delete_booking_page` | | ✓ |
+| `get_connection_link` | ✓ | |
+| `create_connection_link` | | ✓ |
+| `cancel_connection_link` | | ✓ |
+| `get_billing`, `get_upgrade_request` | ✓ | |
+| `request_upgrade`, `cancel_upgrade_request` | | ✓ |
+| `sign_up_anonymous` (keyless setup mode only) | | ✓ |
 
-Tool annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) are surfaced to MCP clients so hosts can decide whether to require user confirmation. They are identical on the hosted server (`https://api.chronary.ai/mcp`). Tools that make Chronary contact a URL you supply (webhooks, iCal feeds, setup links) set `openWorldHint: true`.
+Tool annotations (`title`, `readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) are surfaced to MCP clients so hosts can decide whether to require user confirmation. Every tool is either read-only (`readOnlyHint: true`) or marked destructive (`destructiveHint: true`): creates and updates count as destructive because they change your data. They are identical on the hosted server (`https://api.chronary.ai/mcp`). Tools that make Chronary contact a URL you supply (webhooks, iCal feeds, setup links) set `openWorldHint: true`.
 
 ## Third-party text
 

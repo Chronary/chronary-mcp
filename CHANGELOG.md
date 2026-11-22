@@ -2,7 +2,14 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## 1.8.0 — unreleased
+## 1.8.1 — unreleased
+
+- Every tool that is not read-only now sets `destructiveHint: true`, as the Claude connectors directory requires (a `title` plus `readOnlyHint: true` or `destructiveHint: true` on every tool). That is the 37 write tools from `@chronary/toolkit` 1.7.3 and `sign_up_anonymous`. Read-only tools are unchanged. Clients that confirm destructive actions now ask before creates and updates too (#2608). Still 65 tools.
+- `create_booking_page` (from `@chronary/toolkit` 1.7.3) refuses `availability_constraints` the hosted API rejects: keys must be `mon` to `sun`, times `HH:MM` 24-hour with end after start, at least one day (#2525).
+- `respond_to_proposal` (from `@chronary/toolkit` 1.7.3) describes the saved response plus `auto_resolved` and `auto_resolve_error`: a failed auto-resolve no longer fails the call, so resolve the proposal instead of responding again. `create_proposal` and `respond_to_proposal` refuse a slot that doesn't end after it starts (#2538, #2540).
+- Tool descriptions no longer name other tools (#2592), and `get_calendar_context` mentions recurring-series occurrences (#2529), both from `@chronary/toolkit` 1.7.3.
+
+## 1.8.0 — 2026-11-20
 
 - `CHRONARY_API_KEY` is now optional (#2335). Without it, the server no longer exits. It starts with one tool, `sign_up_anonymous` (`agent_name?`, `tos_version?`), plus the usual prompts and resources.
 - `sign_up_anonymous` signs up with no email through `POST /v1/agent/sign-up/anonymous`:

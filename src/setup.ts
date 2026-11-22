@@ -212,7 +212,9 @@ export function registerSetupTool(server: McpServerLike, deps: SetupDeps): void 
       annotations: {
         title: 'Sign up without an email',
         readOnlyHint: false,
-        destructiveHint: false,
+        // Every non-read-only tool says destructiveHint: true, as the Claude
+        // connectors directory requires (#2608): this one creates an org.
+        destructiveHint: true,
         idempotentHint: false,
         openWorldHint: true,
       },
