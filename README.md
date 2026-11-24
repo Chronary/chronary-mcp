@@ -36,6 +36,13 @@ The no-email sign-up can be switched off at times. Where it is off, the tool ret
 
 All examples use `npx -y @chronary/mcp`, which downloads and runs the latest version on demand. No install step required.
 
+### One-click install (Cursor, VS Code)
+
+[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=chronary&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBjaHJvbmFyeS9tY3AiXX0%3D)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Chronary-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522chronary%2522%252C%2522type%2522%253A%2522stdio%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522%2540chronary%252Fmcp%2522%255D%257D)
+
+Both add the server as `npx -y @chronary/mcp` with no key, so it starts with the `sign_up_anonymous` tool (see [Start without a key](#start-without-a-key)). To use an existing account, add `CHRONARY_API_KEY` to the installed entry, as in the configurations below. On Windows, change the installed command to the `cmd /c` form shown below.
+
 ### Claude Desktop
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
