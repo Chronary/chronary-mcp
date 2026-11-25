@@ -2,7 +2,11 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## 1.8.4 — unreleased
+## 1.8.5 — unreleased
+
+- Rebuilt against `@chronary/toolkit` 1.8.0 and `@chronary/sdk` 0.14.0 (#2763). No code change in this package. 1.8.4 declared the toolkit and SDK it was built with (1.7.5 and 0.13.x), and its Docker image and MCP registry entry pin it, so these toolkit fixes reach every install path only with this release: `list_events` refuses `calendar_id` and `agent_id` together (#2721); `list_org_events`, `list_calendars` and `list_agents` take `cursor` and return `next_cursor` (#2691); `find_meeting_time` with `calendars: []` no longer fails (#2557).
+
+## 1.8.4 — 2026-11-24
 
 - README: one-click install links for Cursor and VS Code. Both add the server as `npx -y @chronary/mcp` with no key, so it starts with `sign_up_anonymous` (#2229).
 - Removed `smithery.yaml`, `smithery-remote-config.json` and the `smithery:republish` script (repo and mirror files, never in the npm tarball). Smithery shut down its hosted runner, CLI and API on 2026-10-31 and is now a plain registry, so nothing reads them (#2229). No code change. Still 65 tools.
