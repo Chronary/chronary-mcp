@@ -2,7 +2,11 @@
 
 All notable changes to `@chronary/mcp` will be documented in this file starting with the soft-launch release.
 
-## 1.8.5 — unreleased
+## 1.8.6 — unreleased
+
+- `list_agents` takes `include_decommissioned` (decommissioned agents are left out unless it is `true` or `status` is set), and the `list_agents` and `list_calendars` descriptions say how each list is filtered, ordered and paged, matching the hosted server (#2749). Rebuilt against `@chronary/toolkit` 1.8.1, which carries the change.
+
+## 1.8.5 — 2026-11-24
 
 - Rebuilt against `@chronary/toolkit` 1.8.0 and `@chronary/sdk` 0.14.0 (#2763). No code change in this package. 1.8.4 declared the toolkit and SDK it was built with (1.7.5 and 0.13.x), and its Docker image and MCP registry entry pin it, so these toolkit fixes reach every install path only with this release: `list_events` refuses `calendar_id` and `agent_id` together (#2721); `list_org_events`, `list_calendars` and `list_agents` take `cursor` and return `next_cursor` (#2691); `find_meeting_time` with `calendars: []` no longer fails (#2557).
 
